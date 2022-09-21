@@ -3,13 +3,26 @@
 
 use core::panic::PanicInfo;
 
-mod serial;
-mod vga_buffer;
+use simple_os::{println, serial_println};
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
     println!("Hello World{}, this is vga display!!!", "!");
     serial_println!("this is from serial{}", "...");
+
+    simple_os::init();
+
+    // unsafe {
+    //     *(0xdeadbeef as *mut u64) = 42;
+    // }
+
+    fn stack_overflow() {
+        stack_overflow();
+    }
+
+    stack_overflow();
+
+    println!("not crash?!");
 
     loop {}
 }
