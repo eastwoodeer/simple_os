@@ -3,7 +3,7 @@
 
 use core::panic::PanicInfo;
 
-use simple_os::{println, serial_println};
+use simple_os::{print, println, serial_println};
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
@@ -16,15 +16,17 @@ pub extern "C" fn _start() -> ! {
     //     *(0xdeadbeef as *mut u64) = 42;
     // }
 
-    fn stack_overflow() {
-        stack_overflow();
-    }
+    // fn stack_overflow() {
+    //     stack_overflow();
+    // }
 
-    stack_overflow();
+    // stack_overflow();
 
-    println!("not crash?!");
-
-    loop {}
+    // loop {
+    //     for _ in 0..100000 {}
+    //     print!("-")
+    // }
+    simple_os::hlt_loop();
 }
 
 /// This function is called on panic.
