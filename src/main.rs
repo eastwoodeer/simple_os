@@ -1,5 +1,8 @@
 #![no_std]
 #![no_main]
+#![feature(custom_test_frameworks)]
+#![test_runner(simple_os::test_runner)]
+#![reexport_test_harness_main = "test_main"]
 
 use core::panic::PanicInfo;
 
@@ -12,26 +15,27 @@ pub extern "C" fn _start() -> ! {
 
     simple_os::init();
 
-    // unsafe {
-    //     *(0xdeadbeef as *mut u64) = 42;
-    // }
+    #[cfg(test)]
+    test_main();
 
-    // fn stack_overflow() {
-    //     stack_overflow();
-    // }
-
-    // stack_overflow();
-
-    // loop {
-    //     for _ in 0..100000 {}
-    //     print!("-")
-    // }
     simple_os::hlt_loop();
 }
 
 /// This function is called on panic.
+#[cfg(not(test))]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
-    loop {}
+    simple_os::hlt_loop();
+}
+
+#[cfg(test)]
+#[panic_handler]
+fn panic(info: &PanicInfo) -> ! {
+    simple_os::test_panic_handler(info)
+}
+
+#[test_case]
+fn trivial_assertion() {
+    assert_eq!(1, 1);
 }
